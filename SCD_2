@@ -1,0 +1,24 @@
+tJavaRow1: context.skey = input_row.SKEY+1;
+tDBinput_2: "select nvl(max(scd_skey),0) as skey from scd_two"
+
+lookup: tDBinput_1:
+"SELECT 
+  CHARVI.SCD_TWO.SCD_SKEY, 
+  CHARVI.SCD_TWO.EMPNO, 
+  CHARVI.SCD_TWO.EMPNAME, 
+  CHARVI.SCD_TWO.SAL, 
+  CHARVI.SCD_TWO.HRA, 
+  CHARVI.SCD_TWO.DEPTNO, 
+  CHARVI.SCD_TWO.EFF_START_DATE, 
+  CHARVI.SCD_TWO.EFF_END_DATE, 
+  CHARVI.SCD_TWO.ACTIVE_FLAG
+FROM CHARVI.SCD_TWO where ACTIVE_FLAG='Y'"
+
+variable part:
+==============
+expression:			type:		variable:
+Main flow: 	row1.empname+"|"+row1.sal+"|"+row1.HRA+"|"+row1.deptno
+lookup flow:	row2.EMPNAME+"|"+row2.SAL+"|"+row2.HRA+"|"+row2.DEPTNO
+
+insertflow: 	Relational.ISNULL(row2.EMPNO) || (!Relational.ISNULL(row2.EMPNO) && !Var.source.equals(Var.target))
+updateflow:		!Relational.ISNULL(row2.EMPNO) && !Var.source.equals(Var.target)
